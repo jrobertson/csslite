@@ -9,7 +9,7 @@ class CSSLite
 
     # parse the CSS
     
-    @a = s.split(/}/)[0..-2].map do |entry|
+    @a = s.strip.split(/}/).map do |entry|
 
       raw_selector,raw_styles = entry.split(/{/,2)
 
@@ -38,7 +38,7 @@ class CSSLite
 
           root_element.css(selector).each do |element|
 
-            element.style[k] = v unless override == false and element.style.has_key? k
+            element.style[k] = v unless element.style.has_key? k
           end
         end
 
