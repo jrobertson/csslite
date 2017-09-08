@@ -5,6 +5,7 @@
 
 class CSSLite
 
+  
   def initialize(s)
 
     # parse the CSS
@@ -19,7 +20,9 @@ class CSSLite
       end
 
       [raw_selector.split(/,\s*/).map(&:strip), h]
-    end      
+    end
+    
+    @elements = {}
     
   end
 
@@ -38,7 +41,9 @@ class CSSLite
 
           root_element.css(selector).each do |element|
 
-            element.style[k] = v unless element.style.has_key? k
+            id = element.object_id
+            @elements[id] = element.style.to_h unless @elements.has_key? id
+            element.style[k] = v unless @elements[id].has_key? k
           end
         end
 
