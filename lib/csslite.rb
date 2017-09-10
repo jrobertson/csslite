@@ -41,15 +41,27 @@ class CSSLite
 
           root_element.css(selector).each do |element|
 
-            id = element.object_id
-            @elements[id] = element.style.to_h unless @elements.has_key? id
-            element.style[k] = v unless @elements[id].has_key? k
+            apply_style element, k, v
+            
+            # apply the CSS to all its children
+            element.each_recursive {|x| apply_style x, k,v}
           end
         end
 
       end
     end
 
+  end
+  
+  private
+  
+  
+  def apply_style(e, k, v)
+    
+    id = e.object_id
+    @elements[id] = e.style.to_h unless @elements.has_key? id
+    e.style[k] = v unless @elements[id].has_key? k
+    
   end
 
 end
