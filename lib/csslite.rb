@@ -43,6 +43,7 @@ class CSSLite
 
       selectors.each do |selector|
 
+        puts 'root_element: ' + root_element.inspect if @debug
         root_element.css(selector).each do |element|
           puts 'element: ' + element.inspect if @debug
           apply_style element, style
@@ -64,10 +65,20 @@ class CSSLite
     puts 'h: '  + h.inspect if @debug
 
     puts 'new_h: '  + new_h.inspect if @debug
-    @override ? h.merge!(new_h) :  h = new_h.merge(h)
+    h2 = @override ? h.merge(new_h) :  new_h.merge(h)
     
     puts 'after h: '  + h.inspect if @debug
-    e.attributes[:style] = h.map{|x| x.join(':') }.join(';')
+    e.attributes[:style] = h2.map{|x| x.join(':') }.join(';')
+    
+    a = (h2 .to_a - e.style.to_h.to_a )
+    puts 'a: ' + a.inspect if @debug
+    
+    a.each do |key, value|
+      name = (key.to_s + '=').to_sym      
+      puts 'name: ' + name.inspect if @debug
+      puts 'value: ' + value.inspect if @debug
+      e.method(name).call(value) if e.respond_to? name
+    end
     
   end
 
